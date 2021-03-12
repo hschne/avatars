@@ -1,0 +1,32 @@
+version: "3"
+services:
+  avatars-db:
+    image: postgres
+    volumes:
+      - avatars-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: avatars
+      POSTGRES_USER: avatars
+
+
+  avatars-redis:
+    image: redis
+    ports:
+      - 6379:6379
+
+
+  imgproxy:
+    container_name: imgproxy
+    image: darthsim/imgproxy:latest
+    environment:
+      - IMGPROXY_KEY=696d6770726f7879 # imgproxy
+      - IMGPROXY_SALT=73616c74 # salt
+      - IMGPROXY_LOCAL_FILESYSTEM_ROOT=/storage
+    volumes:
+      - ./storage:/storage
+    network_mode: host
+
+volumes:
+  avatars-data:
